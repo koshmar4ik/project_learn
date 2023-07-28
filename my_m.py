@@ -21,6 +21,3 @@ df['iso_code','date','location','total_cases'].where(f.col('date').startswith("2
 df['iso_code','date','location','new_cases'].where(f.col('date').between("2021-03-25","2021-03-31")).where(f.col('iso_code').startswith('OWID') == False).withColumn("row_number",f.row_number().over(windowSpec2)).where(f.col('row_number') == 1).orderBy(f.desc(f.col('new_cases'))).show(10)
 
 df['date','location','new_cases'].where(f.col('location').like('Russia')).where(f.col('date').between("2021-03-25","2021-03-31")).orderBy(f.col('date')).withColumn("yesterday",f.lag("new_cases",1).over(windowSpec3)).withColumn("dif",f.col('new_cases') - f.col('yesterday')).fillna(value=0).show(10)
-
-def sumer():
-	return df['iso_code','date','total_cases'].where(f.col('date').startswith("2020-03-31")).where(f.col('iso_code').startswith('OWID') == False).select(f.sum(f.col('total_cases'))).collect()[0][0]
